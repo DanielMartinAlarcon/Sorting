@@ -39,14 +39,54 @@ def bubble_sort( arr ):
 
 
 # STRETCH: implement the Count Sort function below
-def count_sort( arr, maximum=-1 ):
+def count_sort( arr):
+    import numpy as np
     # Check for negative numbers
     if not all([x > -1 for x in arr]):
         return "Error, negative numbers not allowed in Count Sort"
     
+    # Check for empty inputs
+    if arr == []:
+        return arr
+
+    # Make a count vector that can count all numbers up to the max
+    counts = np.zeros(max(arr)+1, dtype=int)
     
+    # Loop through the array, using its integer value as the
+    # index in the count array, and increasing that count by 1
+    for x in arr:
+        counts[x] += 1
+    # print(f'counts: {counts}')
 
-    return arr
+    # Create next_index, a cumulative version of counts
+    next_index = counts.copy()
+    for i in range(1, len(next_index)):
+        next_index[i] = next_index[i-1] + counts[i-1]
+    # print(f'next_index: {next_index}')
 
-arr3 = [1, 5, -2, 4, 3]
-print(count_sort(arr3))
+    
+    # Create a new array of just zeros, same length as the original
+    arr2 = [0]*len(arr)
+
+    # Loop over the original list, placing each item at the position
+    # indicated by counts and adding one to count at the position where
+    # an item was added.
+    for x in arr:
+        try:
+            arr2[next_index[x]] = x
+            next_index[x] += 1
+        except:
+            print(f'x: {x}')
+            print(f'arr2: {arr2}')
+            print(f'next_index: {next_index}')
+            print(f'next_index[x]: {next_index[x]}')
+            # print(f'next_index update: {next_index}')
+            print()
+        # break
+    return arr2
+
+import random
+arr = random.sample(range(200), 50)
+print(count_sort(arr))
+print(sorted(arr))
+print(arr)
